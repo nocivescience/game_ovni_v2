@@ -26,39 +26,37 @@ class Background{
 }
 class Ship{
     constructor(){
-        this.x=game.width/4;
-        this.y=game.height/4;
-        this.dx=0.1;
-        this.dy=0.1;
         this.image=new Image();
         this.image.src='./images/nave_1.png';
         this.lasers=[];
         this.canShoot=true;
         this.maxLasers=20;
     }
-    shootLaser(){
-        if(this.canShoot){
-            this.lasers.push({
-                x:this.x+110,
-                vx:2,
-                y:this.y+85,
-            })
-        }
-        this.canShoot=false;
-    }
     newShip(){
         return {
-            
+            x:game.width/4,
+            y:game.height/4,
+            canShoot:true,
         }
     }
-    draw(){
+    drawShip(){
         ctx.drawImage(
             this.image,
-            this.x,
-            this.y,
+            this.newShip()['x'],
+            this.newShip()['y'],
             100,
             100,
         );
+    }
+    shootLaser(){
+        if(this.canShoot){
+            this.lasers.push({
+                x:this.newShip()['x']+110,
+                vx:2,
+                y:this.newShip()['y']+85,
+            })
+        }
+        this.canShoot=false;
     }
     drawLaser(){
         for(let i=0;i<this.lasers.length;i++){
@@ -86,7 +84,7 @@ window.onload=function(){
         frames++;
         ctx.clearRect(0,0,game.width,game.height)
         background.draw();
-        ship.draw();
+        ship.drawShip();
     }
     function startGame(){
         setInterval(()=>{
@@ -98,33 +96,33 @@ window.onload=function(){
 }
 document.addEventListener('keydown',(e)=>{
     e.preventDefault();
-    if(ship.x>game.width-100){
-        ship.x=game.width-100
+    if(ship.newShip()['x']>game.width-100){
+        ship.newShip()['x']=game.width-100
     }
-    if(ship.x<0){
-        ship.x=0
+    if(ship.newShip()['x']<0){
+        ship.newShip()['x']=0
     }
-    if(ship.y>game.height-100){
-        ship.y=game.height-100
+    if(ship.newShip()['y']>game.height-100){
+        ship.newShip()['y']=game.height-100
     }
-    if(ship.y<0){
-        ship.y=0
+    if(ship.newShip()['y']<0){
+        ship.newShip()['y']=0
     }
     switch(e.key){
         case 'a':
-            ship.x-=5;
+            ship.newShip()['x']-=5;
             break;
         case 'd':
-            ship.x+=5;
+            ship.newShip()['x']+=5;
             break;
         case 'w':
-            ship.y-=5;
+            ship.newShip()['y']-=5;
             break
         case 's':
-            ship.y+=5;
+            ship.newShip()['y']+=5;
             break
         case 'p':
-            ship.canShoot=true;
+            ship.newShip()['canShoot']=true;
             ship.shootLaser()
             break;
     }
@@ -132,7 +130,7 @@ document.addEventListener('keydown',(e)=>{
 document.addEventListener('keyup',(e)=>{
     switch(e.key){
         case 'p':
-            ship.canShoot=true;
+            ship.newShip()['canShoot']=true;
             console.log('aca no pasa nada')
             break;
     }
