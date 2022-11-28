@@ -9,6 +9,9 @@
    id="svg1918"
    sodipodi:docname="life.svg"
    inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:export-filename="life.png"
+   inkscape:export-xdpi="154.82"
+   inkscape:export-ydpi="154.82"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +43,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#008080;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#00ff00;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 89.612068,141.91625 C 75.262739,141.74852 46.755117,113.08463 38.405173,90.343595 30.860041,69.794466 27.35013,39.621205 43.525863,24.871921 69.02447,1.6218956 122.45526,2.11755 147.03694,26.334975 c 14.94492,14.723466 10.14414,43.650313 1.82883,62.91133 -10.47425,24.261845 -46.00834,52.824765 -59.253702,52.669945 z"
        id="path1922"
        sodipodi:nodetypes="saaaas" />
@@ -55,8 +58,8 @@
        id="path1926"
        sodipodi:nodetypes="aaca" />
     <path
-       style="fill:#ff0000;stroke:#000000;stroke-width:0.215534px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 123.48448,159.87167 c 0,0 33.02674,-25.65016 31.63269,-43.19836 -0.79034,-9.94882 -11.19848,-21.495969 -21.59539,-21.599179 -4.30125,-0.0427 -9.12482,8.756429 -9.12482,8.756429 0,0 -4.37784,-7.369559 -8.21234,-7.880789 -8.85654,-1.18078 -21.03313,4.281719 -23.42035,12.550879 -5.49272,19.0263 30.72021,51.37102 30.72021,51.37102 z"
+       style="fill:#ff0000;stroke:#000000;stroke-width:0.270044px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 128.92602,172.6374 c 0,0 40.67222,-32.69612 38.95546,-55.06471 -0.9733,-12.68171 -14.33013,-30.227973 -26.59459,-27.532358 -12.26304,2.695303 -13.48933,36.338558 -13.48933,36.338558 0,0 2.74036,-30.243976 -7.86127,-35.222384 -9.93306,-4.664458 -25.902161,5.457884 -28.842008,15.998534 -6.76425,24.25272 37.831738,65.48236 37.831738,65.48236 z"
        id="path1928"
        sodipodi:nodetypes="caacaac" />
   </g>

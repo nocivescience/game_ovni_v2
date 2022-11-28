@@ -1,5 +1,9 @@
+@font-face {
+    font-family: "pixelart";
+    src: url("./fonts/PressStart2P.ttf");
+  }
 .game{
     width:1200px;
     height:600px;
-    /* background-color: rgb(95, 218, 255); */
+    /* background-color: rgb(95, 255, 202); */
 }

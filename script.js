@@ -93,7 +93,7 @@ class Ship{
                 10*Math.random()<8?8:10*Math.random(),
                 0,2*Math.PI
             )
-            if(this.lasers[i].x800){
+            if(this.lasers[i].x>game.width){
                 this.lasers.splice(this.lasers[i],1)
             }
             ctx.closePath();
@@ -105,7 +105,7 @@ class EnemyYellow{
     constructor(){
         this.enemiesYellow=[];
         this.coordEnemies=[];
-        this.x=game.width-100;
+        this.x=game.width+30;
         this.y=game.height;
         for(let i of [1,2]){
             let enemy=new Image();
@@ -139,15 +139,18 @@ class EnemyYellow{
                 this.coordEnemies[i].y*this.coordEnemies[i]['random'],
                 30,
                 50,
-            )
+            );
+            if(this.coordEnemies[i]['x']<-20){
+                this.coordEnemies.splice(this.coordEnemies[i],1);
+            }
         }
     }
 }
 class EnemyBlue{
     constructor(){
         this.enemiesBlue=[];
-        this.coordEnemiesBlue=[];
-        this.x=game.width-150;
+        this.coordEnemies=[];
+        this.x=game.width+10;
         this.y=game.height;
         for(let i of [1,2]){
             let enemy=new Image();
@@ -157,7 +160,7 @@ class EnemyBlue{
         this.enemy=this.enemiesBlue[0];
     }
     coordsBlue(){
-        this.coordEnemiesBlue.push({
+        this.coordEnemies.push({
             x:this.x,
             y:this.y,
             random: Math.random(),
@@ -167,38 +170,76 @@ class EnemyBlue{
         if(frames%1000==0){
             this.enemy=this.enemy==this.enemiesBlue[0]?this.enemiesBlue[1]:this.enemiesBlue[0]
         }
-        for(let i=0;i<this.coordEnemiesBlue.length;i++){
+        for(let i=0;i<this.coordEnemies.length;i++){
             ctx.drawImage(
                 this.enemy,
-                this.coordEnemiesBlue[i]['x']--,
-                this.coordEnemiesBlue[i]['y']*this.coordEnemiesBlue[i]['random'],
+                this.coordEnemies[i]['x']--,
+                this.coordEnemies[i]['y']*this.coordEnemies[i]['random'],
                 30,
                 50,
             );
             ctx.strokeStyle='red'
             ctx.strokeRect(
-                this.coordEnemiesBlue[i]['x'],
-                this.coordEnemiesBlue[i]['y']*this.coordEnemiesBlue[i]['random'],
+                this.coordEnemies[i]['x'],
+                this.coordEnemies[i]['y']*this.coordEnemies[i]['random'],
                 30,
                 50
             )
+            if(this.coordEnemies[i]['x']<-20){
+                this.coordEnemies.splice(this.coordEnemies[i],1);
+            }
         }
     }
 }
 class Lifes{
-    constructor(num){
-        this.num=num;
+    constructor(){
         this.images=[];
     }
     draw(){
-        
+        ctx.font='15px pixelart';
+        ctx.fillText('lifes',30,35);
+        for(let i of [1,2,3]){
+            const image=new Image();
+            image.src='./images/life.png';
+            ctx.drawImage(
+                image,
+                20*i+90,
+                20,
+                20,
+                20
+            );
+            this.images.push(image)
+        }
+    }
+}
+class Fuel{
+    constructor(){
+        this.full=200;
+        this.dx=0;
+    }
+    draw(){
+        ctx.font='15px pixelart';
+        ctx.fillText('Fuel: ',200,35);
+        ctx.rectStyle='rgb(95, 255, 202)';
+        ctx.fillRect(270,15,230-this.dx,24);
+    }
+}
+class Score{
+    constructor(){
+        this.score=0
+    }
+    draw(){
+        ctx.font='15px pixelart';
+        ctx.fillText(`Score: ${this.score}`,530,35);
     }
 }
 const background= new Background();
 const ship=new Ship();
 const enemiesYellow= new EnemyYellow();
 const enemiesBlue= new EnemyBlue();
-const lifes=new Lifes(3);
+const lifes=new Lifes();
+const score=new Score();
+const fuel= new Fuel();
 window.onload=function(){
     function update(){
         frames+=10;
@@ -209,14 +250,16 @@ window.onload=function(){
         enemiesYellow.drawEnemiesYellow();
         enemiesBlue.drawEnemiesBlue();
         lifes.draw();
+        score.draw();
+        fuel.draw();
         enemiesYellow.coordEnemies.forEach(enemy=>{
             if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){
-                console.log('collision')
+                enemiesYellow.coordEnemies.splice(enemy,1)
             }
         });
-        enemiesBlue.coordEnemiesBlue.forEach(enemy=>{
-            if(Math.abs(ship.x+100-enemy['x'+30])<200&&Math.abs(ship.y+100-enemy['y']+40)<200){
-                console.log('collision')
+        enemiesBlue.coordEnemies.forEach(enemy=>{
+            if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){
+                enemiesBlue.coordEnemies.splice(enemy,1)
             }
         })
     }
