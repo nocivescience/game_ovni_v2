@@ -258,7 +258,7 @@ window.onload=function(){
             }
         });
         enemiesBlue.coordEnemies.forEach(enemy=>{
-            if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){
+            if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){ 
                 enemiesBlue.coordEnemies.splice(enemy,1)
             }
         })
