@@ -3,6 +3,14 @@ const ctx= game.getContext('2d');
 game.width=window.innerWidth;
 game.height=window.innerHeight;
 let Frames=0;
+var moonAudio=new Audio();
+var shootAudio= new Audio();
+var impactAudio= new Audio();
+var gameOverAudio= new Audio();
+moonAudio.src='./sounds/moon.mp3';
+shootAudio.src='./sounds/shot.mp3';
+impactAudio.src='./sounds/impact.mp3';
+gameOverAudio.src='./sounds/game-over.mp3';
 class Background{
     constructor(){
         this.x=0;
@@ -254,7 +262,9 @@ function keyDown(e){
             break
         case 'p':
             ship.canShoot=true;
-            ship.shootLaser()
+            ship.shootLaser();
+            shootAudio.play();
+            moonAudio.play();
             break;
     }
 }
@@ -285,14 +295,10 @@ function update(){
     score.draw();
     fuel.draw();
     if(lifes.num===0){
-        clearInterval(intervalos)
+        clearInterval(intervalos);
+        gameOverAudio.play();
+        moonAudio.pause();
     }
-    enemiesYellow.coordEnemies.forEach((enemy,i)=>{
-        if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
-            enemiesYellow.coordEnemies.splice(i,1);
-            lifes.num--;
-        }
-    });
     // para aniquilar a los amarillos con los lasers
     enemiesYellow.coordEnemies.forEach((enemy,i)=>{
         ship.lasers.forEach((laser,j)=>{
@@ -301,6 +307,7 @@ function update(){
                 ship.lasers.splice(j,1);
                 fuel.dx-=10;
                 score.score++;
+                impactAudio.play();
             }
         })
     })
@@ -311,12 +318,19 @@ function update(){
                 ship.lasers.splice(j,1);
                 fuel.dx-=10;
                 score.score++;
+                impactAudio.play();
             }
         })
     })
     enemiesBlue.coordEnemies.forEach((enemy,i)=>{
         if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
             enemiesBlue.coordEnemies.splice(i,1);
+            lifes.num--;
+        }
+    });
+    enemiesYellow.coordEnemies.forEach((enemy,i)=>{
+        if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
+            enemiesYellow.coordEnemies.splice(i,1);
             lifes.num--;
         }
     });
