@@ -37,19 +37,24 @@ class Ship{
             this.image.src=`./images/nave_${i}.png`;
             this.images.push(this.image)
         }
-        this.lasers=[];
-        this.canShoot=true;
-        this.maxLasers=20;
+    }
+    newShip(){
+        return {
+            x: 50,
+            y: 300,
+            lasers: [],
+            canShoot: true,
+        }
     }
     shootLaser(){
-        if(this.canShoot){
-            this.lasers.push({
-                x:this.x+110,
+        if(this.newShip().canShoot){
+            this.newShip().lasers.push({
+                x:this.newShip()['x']+110,
                 vx:2,
-                y:this.y+85,
+                y:this.newShip()['y']+85,
             })
         }
-        this.canShoot=false;
+        this.newShip()['canShoot']=false;
     }
     draw(){
         this.image=this.images[0]
@@ -84,17 +89,17 @@ class Ship{
         ctx.closePath();
     }
     drawLaser(){
-        for(let i=0;i<this.lasers.length;i++){
+        for(let i=0;i<this.newShip().lasers.length;i++){
             ctx.fillStyle='rgb(95, 218, 255)';
             ctx.beginPath();
             ctx.arc(
-                this.lasers[i].x+=this.lasers[i].vx,
-                this.lasers[i].y,
-                10*Math.random()<8?8:10*Math.random(),
+                this.newShip().lasers[i].x+=this.newShip().lasers[i].vx,
+                this.newShip().lasers[i].y,
+                7+3*Math.random()<8?8:10*Math.random(),
                 0,2*Math.PI
             )
             if(this.lasers[i].x>game.width){
-                this.lasers.splice(this.lasers[i],1)
+                this.lasers.splice(this.newShip().lasers[i],1)
             }
             ctx.closePath();
             ctx.fill();
@@ -269,15 +274,14 @@ function keyDown(e){
             ship.y+=5;
             break
         case 'p':
-            ship.canShoot=true;
-            ship.shootLaser()
+            ship.shootLaser();
             break;
     }
 }
 function keyUp(e){
     switch(e.key){
         case 'p':
-            ship.canShoot=true;
+            ship.newShip()['canShoot']=true;
             break;
     }
 }
