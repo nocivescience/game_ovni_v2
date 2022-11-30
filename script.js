@@ -193,12 +193,12 @@ class EnemyBlue{
 }
 class Lifes{
     constructor(){
-        this.images=[];
+        this.num=5;
     }
     draw(){
         ctx.font='15px pixelart';
         ctx.fillText('lifes',30,35);
-        for(let i of [1,2,3]){
+        for(let i=0;i<this.num;i++){
             const image=new Image();
             image.src='./images/life.png';
             ctx.drawImage(
@@ -208,7 +208,6 @@ class Lifes{
                 20,
                 20
             );
-            this.images.push(image)
         }
     }
 }
@@ -240,42 +239,10 @@ const enemiesBlue= new EnemyBlue();
 const lifes=new Lifes();
 const score=new Score();
 const fuel= new Fuel();
-window.onload=function(){
-    function update(){
-        frames+=10;
-        ctx.clearRect(0,0,game.width,game.height)
-        background.draw();
-        ship.draw();
-        ship.drawLaser()
-        enemiesYellow.drawEnemiesYellow();
-        enemiesBlue.drawEnemiesBlue();
-        lifes.draw();
-        score.draw();
-        fuel.draw();
-        enemiesYellow.coordEnemies.forEach(enemy=>{
-            if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){
-                enemiesYellow.coordEnemies.splice(enemy,1)
-            }
-        });
-        enemiesBlue.coordEnemies.forEach(enemy=>{
-            if(Math.abs(ship.x+200-enemy['x']+30)<200&&Math.abs(ship.y+100-enemy['y']+40)<200){ 
-                enemiesBlue.coordEnemies.splice(enemy,1)
-            }
-        })
-    }
-    function startGame(){
-        setInterval(()=>{
-            if(frames%1000==0){
-                enemiesYellow.coordsYellow();
-                enemiesBlue.coordsBlue();
-            }
-            update();
-        },10)
-    }
-    startGame();
+function distanceBetween(x1,y1,x2,y2){
+    return Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2))
 }
-document.addEventListener('keydown',(e)=>{
-    e.preventDefault();
+function keyDown(e){
     if(ship.x>game.width-100){
         ship.x=game.width-100
     }
@@ -306,11 +273,45 @@ document.addEventListener('keydown',(e)=>{
             ship.shootLaser()
             break;
     }
-});
-document.addEventListener('keyup',(e)=>{
+}
+function keyUp(e){
     switch(e.key){
         case 'p':
             ship.canShoot=true;
             break;
     }
-})
+}
+function update(){
+    frames+=10;
+    ctx.clearRect(0,0,game.width,game.height)
+    background.draw();
+    ship.draw();
+    ship.drawLaser()
+    enemiesYellow.drawEnemiesYellow();
+    enemiesBlue.drawEnemiesBlue();
+    lifes.draw();
+    score.draw();
+    fuel.draw();
+    if(lifes.num===0){
+        clearInterval(intervalos)
+    }
+    enemiesYellow.coordEnemies.forEach((enemy,i)=>{
+        if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
+            enemiesYellow.coordEnemies.splice(i,1);
+            lifes.num--;
+        }
+    });
+    enemiesBlue.coordEnemies.forEach((enemy,i)=>{
+        if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
+            enemiesBlue.coordEnemies.splice(i,1);
+            lifes.num--;
+        }
+    });
+    if(frames%1000==0){
+        enemiesYellow.coordsYellow();
+        enemiesBlue.coordsBlue();
+    }
+}
+document.addEventListener('keydown',keyDown);
+document.addEventListener('keyup',keyUp);
+const intervalos=setInterval(update,10)
