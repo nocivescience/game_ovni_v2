@@ -2,7 +2,7 @@ const game=document.getElementById('game');
 const ctx= game.getContext('2d');
 game.width=window.innerWidth;
 game.height=window.innerHeight;
-let frames=0;
+let Frames=0;
 class Background{
     constructor(){
         this.x=0;
@@ -37,28 +37,23 @@ class Ship{
             this.image.src=`./images/nave_${i}.png`;
             this.images.push(this.image)
         }
-    }
-    newShip(){
-        return {
-            x: 50,
-            y: 300,
-            lasers: [],
-            canShoot: true,
-        }
+        this.lasers=[];
+        this.canShoot=true;
+        this.maxLasers=20;
     }
     shootLaser(){
-        if(this.newShip().canShoot){
-            this.newShip().lasers.push({
-                x:this.newShip()['x']+110,
+        if(this.canShoot){
+            this.lasers.push({
+                x:this.x+110,
                 vx:2,
-                y:this.newShip()['y']+85,
+                y:this.y+85,
             })
         }
-        this.newShip()['canShoot']=false;
+        this.canShoot=false;
     }
     draw(){
         this.image=this.images[0]
-        if(frames%8==0){
+        if(Frames%8==0){
             if(this.image==this.images[0]){
                 this.image=this.images[1]
             }else{
@@ -78,8 +73,6 @@ class Ship{
             100,
             100,
         );
-        ctx.strokeStyle='red';
-        ctx.strokeRect(this.x,this.y,100,100);
         ctx.beginPath();
         ctx.fillStyle='yellow'
         ctx.moveTo(this.x,this.y+80)
@@ -89,17 +82,17 @@ class Ship{
         ctx.closePath();
     }
     drawLaser(){
-        for(let i=0;i<this.newShip().lasers.length;i++){
+        for(let i=0;i<this.lasers.length;i++){
             ctx.fillStyle='rgb(95, 218, 255)';
             ctx.beginPath();
             ctx.arc(
-                this.newShip().lasers[i].x+=this.newShip().lasers[i].vx,
-                this.newShip().lasers[i].y,
-                7+3*Math.random()<8?8:10*Math.random(),
+                this.lasers[i].x+=this.lasers[i].vx,
+                this.lasers[i].y,
+                10*Math.random()<8?8:10*Math.random(),
                 0,2*Math.PI
             )
             if(this.lasers[i].x>game.width){
-                this.lasers.splice(this.newShip().lasers[i],1)
+                this.lasers.splice(this.lasers[i],1)
             }
             ctx.closePath();
             ctx.fill();
@@ -127,7 +120,7 @@ class EnemyYellow{
         })
     }
     drawEnemiesYellow(){
-        if(frames%1000==0){
+        if(Frames%1000==0){
             this.enemy=this.enemy==this.enemiesYellow[0]?this.enemiesYellow[1]:this.enemiesYellow[0]
         }
         for(let i=0;i<this.coordEnemies.length;i++){
@@ -138,13 +131,6 @@ class EnemyYellow{
                 30,
                 50,
             )
-            ctx.strokeStyle='blue'
-            ctx.strokeRect(
-                this.coordEnemies[i].x,
-                this.coordEnemies[i].y*this.coordEnemies[i]['random'],
-                30,
-                50,
-            );
             if(this.coordEnemies[i]['x']<-20){
                 this.coordEnemies.splice(this.coordEnemies[i],1);
             }
@@ -172,7 +158,7 @@ class EnemyBlue{
         })
     }
     drawEnemiesBlue(){
-        if(frames%1000==0){
+        if(Frames%1000==0){
             this.enemy=this.enemy==this.enemiesBlue[0]?this.enemiesBlue[1]:this.enemiesBlue[0]
         }
         for(let i=0;i<this.coordEnemies.length;i++){
@@ -183,13 +169,6 @@ class EnemyBlue{
                 30,
                 50,
             );
-            ctx.strokeStyle='red'
-            ctx.strokeRect(
-                this.coordEnemies[i]['x'],
-                this.coordEnemies[i]['y']*this.coordEnemies[i]['random'],
-                30,
-                50
-            )
             if(this.coordEnemies[i]['x']<-20){
                 this.coordEnemies.splice(this.coordEnemies[i],1);
             }
@@ -198,17 +177,17 @@ class EnemyBlue{
 }
 class Lifes{
     constructor(){
-        this.num=5;
+        this.num=3;
     }
     draw(){
         ctx.font='15px pixelart';
-        ctx.fillText('lifes',30,35);
+        ctx.fillText('lifes:',10,35);
         for(let i=0;i<this.num;i++){
             const image=new Image();
             image.src='./images/life.png';
             ctx.drawImage(
                 image,
-                20*i+90,
+                20*i+100,
                 20,
                 20,
                 20
@@ -274,19 +253,28 @@ function keyDown(e){
             ship.y+=5;
             break
         case 'p':
-            ship.shootLaser();
+            ship.canShoot=true;
+            ship.shootLaser()
             break;
     }
 }
 function keyUp(e){
     switch(e.key){
         case 'p':
-            ship.newShip()['canShoot']=true;
+            ship.canShoot=true;
             break;
     }
 }
 function update(){
-    frames+=10;
+    Frames+=10;
+    if(Frames%100==0){
+        fuel.dx++;
+        if(fuel.dx>230){
+            fuel.dx=230;
+        }else if(fuel.dx<0){
+            fuel.dx=0
+        }
+    }
     ctx.clearRect(0,0,game.width,game.height)
     background.draw();
     ship.draw();
@@ -305,13 +293,34 @@ function update(){
             lifes.num--;
         }
     });
+    // para aniquilar a los amarillos con los lasers
+    enemiesYellow.coordEnemies.forEach((enemy,i)=>{
+        ship.lasers.forEach((laser,j)=>{
+            if(distanceBetween(enemy['x']-30,enemy['y']*enemy['random']+25,laser['x'],laser['y'])<40){
+                enemiesYellow.coordEnemies.splice(i,1);
+                ship.lasers.splice(j,1);
+                fuel.dx-=10;
+                score.score++;
+            }
+        })
+    })
+    enemiesBlue.coordEnemies.forEach((enemy,i)=>{
+        ship.lasers.forEach((laser,j)=>{
+            if(distanceBetween(enemy['x']-30,enemy['y']*enemy['random']+25,laser['x'],laser['y'])<40){
+                enemiesBlue.coordEnemies.splice(i,1);
+                ship.lasers.splice(j,1);
+                fuel.dx-=10;
+                score.score++;
+            }
+        })
+    })
     enemiesBlue.coordEnemies.forEach((enemy,i)=>{
         if(distanceBetween(ship.x+50,ship.y+50,enemy['x']-30,enemy['y']*enemy['random']+25)<50){
             enemiesBlue.coordEnemies.splice(i,1);
             lifes.num--;
         }
     });
-    if(frames%1000==0){
+    if(Frames%1000==0){
         enemiesYellow.coordsYellow();
         enemiesBlue.coordsBlue();
     }
